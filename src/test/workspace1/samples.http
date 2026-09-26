@@ -19,7 +19,7 @@ content-type: application/json
 POST {{endpoint}} HTTP/1.1
 content-type: application/json
 
-{ "command": "custom.getExtensionInfo", "args": ["dpar39.vscode-rest-control"] }
+{ "command": "custom.getExtensionInfo", "args": ["lamnguyenx.vscode-hacker-rest-control"] }
 
 ### get current workspace file
 POST {{endpoint}} HTTP/1.1

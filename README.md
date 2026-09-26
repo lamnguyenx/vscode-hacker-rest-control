@@ -1,15 +1,15 @@
 <p align="center">
-  <a href="https://marketplace.visualstudio.com/items?itemName=dpar39.vscode-rest-control">
+  <a href="https://marketplace.visualstudio.com/items?itemName=lamnguyenx.vscode-hacker-rest-control">
     <img alt="REST Control" src="./assets/logo.drawio.png" height="200">
   </a>
 </p>
 
 <p align="center">
-  <a href="https://marketplace.visualstudio.com/items?itemName=dpar39.vscode-rest-control" title="Check it out on the Visual Studio Marketplace">
-    <img src="https://vscode-marketplace-badge.vercel.app/api/badge/version/dpar39.vscode-rest-control" alt="Visual Studio Marketplace" style="display: inline-block" />
+  <a href="https://marketplace.visualstudio.com/items?itemName=lamnguyenx.vscode-hacker-rest-control" title="Check it out on the Visual Studio Marketplace">
+    <img src="https://vscode-marketplace-badge.vercel.app/api/badge/version/lamnguyenx.vscode-hacker-rest-control" alt="Visual Studio Marketplace" style="display: inline-block" />
   </a>
 
-  <img src="https://vscode-marketplace-badge.vercel.app/api/badge/installs/dpar39.vscode-rest-control" alt="Number of installs"  style="display: inline-block;margin-left:10px" />
+  <img src="https://vscode-marketplace-badge.vercel.app/api/badge/installs/lamnguyenx.vscode-hacker-rest-control" alt="Number of installs"  style="display: inline-block;margin-left:10px" />
 
   <a href="https://www.buymeacoffee.com/dpar39" title="Buy me a coffee" style="margin-left:10px">
     <img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-$3-blue?logo=buy-me-a-coffee&style=flat" alt="Buy me a coffee" style="display: inline-block" />
@@ -137,4 +137,4 @@ Behind each command, there is a gear button. When you click on it, it brings you
 
 ## Feedback / issues / ideas
 
-Please submit your feedback/issues/ideas by creating an issue in the project repository: [issue list](https://github.com/dpar39/vscode-rest-control/issues).
+Please submit your feedback/issues/ideas by creating an issue in the project repository: [issue list](https://github.com/lamnguyenx/vscode-hacker-rest-control/issues).

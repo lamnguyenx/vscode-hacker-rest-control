@@ -16,7 +16,7 @@ class MockHttpServer {
     onErrorCallback?: (err: Error) => void,
   ) {
     this._server = createServer((req: IncomingMessage, res: ServerResponse) => {
-      let body: Buffer[] = [];
+      const body: Buffer[] = [];
       req.on("data", (chunk) => {
         body.push(chunk);
       });

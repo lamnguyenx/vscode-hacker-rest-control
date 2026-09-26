@@ -1,18 +1,18 @@
 {
-  "name": "vscode-rest-control",
-  "displayName": "REST Control",
+  "name": "vscode-hacker-rest-control",
+  "displayName": "Hacker REST Control",
   "description": "This extension allows you to remotely control Visual Studio Code via a REST endpoint, taking automation to the next level.",
-  "publisher": "dpar39",
+  "publisher": "lamnguyenx",
   "license": "MIT",
-  "version": "0.0.18",
+  "version": "2026.9.26",
   "engines": {
-    "vscode": "^1.55.0"
+    "vscode": "^1.100.0"
   },
   "badges": [
     {
       "description": "version",
-      "url": "https://img.shields.io/github/package-json/v/dpar39/vscode-rest-control?color=green&label=vscode-rest-control&style=flat-square",
-      "href": "https://github.com/dpar39/vscode-rest-control"
+      "url": "https://img.shields.io/github/package-json/v/lamnguyenx/vscode-hacker-rest-control?color=green&label=vscode-hacker-rest-control&style=flat-square",
+      "href": "https://github.com/lamnguyenx/vscode-hacker-rest-control"
     },
     {
       "description": "Buy me a coffee",
@@ -27,7 +27,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/dpar39/vscode-rest-control"
+    "url": "https://github.com/lamnguyenx/vscode-hacker-rest-control"
   },
   "categories": [
     "Other",
@@ -73,35 +73,32 @@
     "test-compile": "tsc -p ./",
     "test-watch": "tsc -watch -p ./",
     "pretest": "npm run test-compile && npm run lint",
-    "lint": "eslint src --ext ts && npx prettier --check './**/*.{js,ts}'",
+    "lint": "eslint src && npx prettier --check './**/*.{js,ts}'",
     "test": "xvfb-run -a node ./out/test/runTest.js",
     "format": "npx prettier --write './**/*.{js,jsx,mjs,cjs,ts,tsx}'"
   },
   "devDependencies": {
-    "@types/glob": "^7.1.6",
-    "@types/mocha": "^8.0.4",
-    "@types/node": "^12.11.7",
-    "@types/tcp-port-used": "^1.0.0",
-    "@types/vscode": "^1.55.0",
-    "@types/ws": "7.4.1",
-    "@typescript-eslint/eslint-plugin": "^4.14.1",
-    "@typescript-eslint/parser": "^4.14.1",
-    "@vscode/test-cli": "0.0.9",
-    "@vscode/test-electron": "^2.3.9",
-    "@vscode/vsce": "^2.26.1",
-    "eslint": "^7.19.0",
-    "glob": "^7.1.6",
-    "mocha": "^10.4.0",
-    "ts-loader": "^8.0.14",
-    "typescript": "^4.1.3",
-    "webpack": "^5.19.0",
-    "webpack-cli": "^4.4.0",
-    "ws": "^7.5.3"
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^24.0.0",
+    "@types/tcp-port-used": "^1.0.4",
+    "@types/vscode": "^1.100.0",
+    "@types/ws": "8.18.1",
+    "@vscode/test-cli": "0.0.10",
+    "@vscode/test-electron": "^2.4.1",
+    "@vscode/vsce": "^2.32.0",
+    "eslint": "^9.16.0",
+    "glob": "^11.0.1",
+    "mocha": "^11.1.0",
+    "ts-loader": "^9.5.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.0",
+    "webpack": "^5.97.0",
+    "webpack-cli": "^6.0.1",
+    "ws": "^8.18.1"
   },
   "dependencies": {
     "tcp-port-used": "^1.0.2"
   },
-  "overrides": {
-    "minimatch": "5.1.2"
-  }
+  "overrides": {}
 }

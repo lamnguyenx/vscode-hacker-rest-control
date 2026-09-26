@@ -28,17 +28,10 @@ function sendEvent(
   return new Promise((accept, reject) => {
     const httpModule = url.protocol.startsWith("https") ? https : http;
     const req = httpModule.request(options, (res) => {
-      let data = "";
-      ``;
-      res.on("data", (chunk) => {
-        data += chunk;
+      res.on("data", (_chunk) => {
       });
       res.on("end", () => {
         accept();
-      });
-      res.on("error", (err) => {
-        reject(err);
-        vscode.window.showErrorMessage(`Error notifying of event ${eventName}: ${err}`, "OK");
       });
     });
     req.on("error", (err) => {
@@ -53,9 +46,12 @@ function sendEvent(
   });
 }
 
-const workspaceEvents = {
+const workspaceEvents: Record<string, (listener: (e: vscode.TextDocument) => any, thisArgs?: any, disposables?: vscode.Disposable[]) => vscode.Disposable> = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   "vscode.workspace.onDidSaveTextDocument": vscode.workspace.onDidSaveTextDocument,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   "vscode.workspace.onDidOpenTextDocument": vscode.workspace.onDidOpenTextDocument,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   "vscode.workspace.onDidCloseTextDocument": vscode.workspace.onDidCloseTextDocument,
 };
 
@@ -66,7 +62,7 @@ export async function registerEventHandler(
   onErrorMessage: string,
 ) {
   httpMethod = httpMethod || "POST";
-  for (let ehr of eventHandlerRegistrations) {
+  for (const ehr of eventHandlerRegistrations) {
     ehr.dispose();
   }
   eventHandlerRegistrations = [];

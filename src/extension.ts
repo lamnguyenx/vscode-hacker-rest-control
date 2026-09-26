@@ -9,7 +9,7 @@ import { processRemoteControlRequest } from "./services/requestProcessor";
 let server: Server;
 let statusbar: vscode.StatusBarItem;
 
-export const EXTENSION_ID: string = "dpar39.vscode-rest-control";
+export const EXTENSION_ID: string = "lamnguyenx.vscode-hacker-rest-control";
 export function getListeningPort(): number | undefined {
   if (!server || !server.listening) {
     return;
@@ -160,7 +160,7 @@ function killPreviousVscodeProcessIfUsingTcpPort(
       const pid = fs.readFileSync(portFile, "utf-8");
       Logger.info(`Found previous PID=${pid} for HTTP port ${port}`);
       process.kill(parseInt(pid));
-    } catch (e) {
+    } catch {
       Logger.warning(`Unable to kill process specified in ${portFile}`);
     }
     fs.unlinkSync(portFile);
@@ -208,7 +208,7 @@ export function activate(context: vscode.ExtensionContext) {
   statusbar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
   subscriptions.push(openSettings);
   vscode.workspace.onDidChangeConfiguration((event) => {
-    let affected = event.affectsConfiguration(`${SETTINGS_NAME}`);
+    const affected = event.affectsConfiguration(`${SETTINGS_NAME}`);
     if (affected) {
       setupRestControl(context);
     }

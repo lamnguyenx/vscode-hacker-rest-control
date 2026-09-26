@@ -5,42 +5,12 @@ import { quickPick } from "./quickPick";
 import { registerExternalFormatter } from "./formatter";
 import { registerEventHandler } from "./eventHandler";
 
-function createObject(arg: any): any {
-  if (typeof arg === "object" && arg.hasOwnProperty("__type__")) {
-    const type = arg.__type__;
-    if (type === "Uri") {
-      return vscode.Uri.parse(arg.args[0]);
-    } else if (type === "Position") {
-      return new vscode.Position(arg.args[0], arg.args[1]);
-    } else if (type === "Range") {
-      return new vscode.Range(arg.args[0], arg.args[1], arg.args[2], arg.args[3]);
-    } else if (type === "Location") {
-      return new vscode.Location(createObject(arg.args[0]), createObject(arg.args[1]));
-    }
-  }
-  return arg;
-}
-
-function createArguments(args?: any[]): any[] {
-  const args2: any[] = [];
-  if (args instanceof Array) {
-    for (let arg of args) {
-      if (arg instanceof Array) {
-        args2.push(createArguments(arg));
-      } else {
-        args2.push(createObject(arg));
-      }
-    }
-  }
-  return args2;
-}
-
 export async function processRemoteControlRequest(command: string, args: any[]): Promise<any> {
   if (command === "custom.runInTerminal") {
     const terminal = vscode.window.activeTerminal;
     if (terminal) {
       terminal.show(true);
-      for (let cmd of args) {
+      for (const cmd of args) {
         terminal.sendText(cmd);
       }
       return;
@@ -125,7 +95,7 @@ export async function processRemoteControlRequest(command: string, args: any[]):
     }
     let uri = null;
     if (!path.isAbsolute(filePath)) {
-      let candidates = await vscode.workspace.findFiles(filePath);
+      const candidates = await vscode.workspace.findFiles(filePath);
       if (candidates.length === 1) {
         uri = candidates[0];
       }

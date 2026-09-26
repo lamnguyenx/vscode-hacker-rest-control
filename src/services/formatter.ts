@@ -44,7 +44,7 @@ export async function registerExternalFormatter(
         doc.lineAt(0).range.start,
         doc.lineAt(doc.lineCount - 1).range.end,
       );
-      return new Promise((accept, reject) => {
+      return new Promise((accept, _reject) => {
         const httpModule = url.protocol.startsWith("https") ? https : http;
         const req = httpModule.request(options, (res) => {
           let data = "";
