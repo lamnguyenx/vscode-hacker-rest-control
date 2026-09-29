@@ -19,9 +19,31 @@ export function getListeningPort(): number | undefined {
 }
 
 const SETTINGS_NAME: string = "restRemoteControl";
+const RC_PORT_ENVVAR_NAME = "REMOTE_CONTROL_PORT";
+const RC_PORT_ENVVAR_OVERRIDE_NAME = "HACKER_REST_CONTROL_PORT";
+
+/**
+ * Port to bind, taken from the `HACKER_REST_CONTROL_PORT` environment variable
+ * when it holds a valid port number (1-65535). This is the deployment-level pin
+ * (e.g. `docker-compose.yml`), so it takes precedence over the
+ * `restRemoteControl.port` setting and the workspace-hash default.
+ */
+function getPortFromEnvironment(): number | undefined {
+  const raw = process.env[RC_PORT_ENVVAR_OVERRIDE_NAME]?.trim();
+  if (!raw) {
+    return undefined;
+  }
+  const port = Number(raw);
+  if (!Number.isInteger(port) || port <= 0 || port > 65535) {
+    Logger.warning(
+      `Ignoring invalid ${RC_PORT_ENVVAR_OVERRIDE_NAME}="${raw}" (expected an integer between 1 and 65535)`,
+    );
+    return undefined;
+  }
+  return port;
+}
 
 function setRemoteControlEnvironmentVariable(context: vscode.ExtensionContext, port: number = 0) {
-  const RC_PORT_ENVVAR_NAME = "REMOTE_CONTROL_PORT";
   if (port === 0) {
     context.environmentVariableCollection.delete(RC_PORT_ENVVAR_NAME);
   } else {
@@ -146,6 +168,26 @@ function httpPortToPid(context: vscode.ExtensionContext, port: number): string {
   return cacheDir + "/" + port + ".pid";
 }
 
+/**
+ * True when `pid` looks like a VS Code extension host. On Linux we can read the
+ * process command line and make sure we are not about to kill an unrelated
+ * process that happens to have recycled the PID recorded in a stale port file.
+ * Fall back to a plain existence check where `/proc` is unavailable (macOS).
+ */
+function isExtensionHostProcess(pid: number): boolean {
+  try {
+    const cmdline = fs.readFileSync(`/proc/${pid}/cmdline`, "utf-8");
+    return cmdline.includes("extensionHost");
+  } catch {
+    try {
+      process.kill(pid, 0);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+}
+
 function killPreviousVscodeProcessIfUsingTcpPort(
   context: vscode.ExtensionContext,
   port: number | undefined,
@@ -157,9 +199,15 @@ function killPreviousVscodeProcessIfUsingTcpPort(
   const portFile = httpPortToPid(context, port!);
   if (fs.existsSync(portFile)) {
     try {
-      const pid = fs.readFileSync(portFile, "utf-8");
-      Logger.info(`Found previous PID=${pid} for HTTP port ${port}`);
-      process.kill(parseInt(pid));
+      const pid = parseInt(fs.readFileSync(portFile, "utf-8"));
+      if (isExtensionHostProcess(pid)) {
+        Logger.info(`Found previous PID=${pid} for HTTP port ${port}`);
+        process.kill(pid);
+      } else {
+        Logger.warning(
+          `Not killing PID=${pid} from stale port file ${portFile} - it is not an extension host`,
+        );
+      }
     } catch {
       Logger.warning(`Unable to kill process specified in ${portFile}`);
     }
@@ -180,7 +228,16 @@ function setupRestControl(context: vscode.ExtensionContext) {
   const config = vscode.workspace.getConfiguration(SETTINGS_NAME);
   const enabled = config.get<number | null>("enable");
   if (enabled) {
-    const port = config.get<number | null>("port") || getDefaultPortForWorkspace();
+    const envPort = getPortFromEnvironment();
+    const configuredPort = config.get<number | null>("port");
+    const port = envPort ?? (configuredPort || getDefaultPortForWorkspace());
+    if (envPort) {
+      Logger.info(`Using port ${envPort} from ${RC_PORT_ENVVAR_OVERRIDE_NAME}`);
+    } else if (configuredPort) {
+      Logger.info(`Using port ${configuredPort} from the "${SETTINGS_NAME}.port" setting`);
+    } else {
+      Logger.info(`Using workspace-derived port ${port}`);
+    }
     killPreviousVscodeProcessIfUsingTcpPort(context, port);
     const fallbackPorts = config.get<number[] | null>("fallbacks");
     startHttpServer(

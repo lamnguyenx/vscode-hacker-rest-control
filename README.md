@@ -30,12 +30,14 @@ The main motivation behind it was that while `Remote Control` uses `websockets`,
 The extension has the following settings which you can use to configure it:
 
 - `restRemoteControl.enable`: enable/disable this extension
-- `restRemoteControl.port`: set the port number on which the HTTP server will listen, otherwise the extension will pick one available port for you based on the current workspace path.
+- `restRemoteControl.port`: set the port number on which the HTTP server will listen, otherwise the extension will pick one available port for you based on the current workspace path. The `HACKER_REST_CONTROL_PORT` environment variable overrides this setting.
 - `restRemoteControl.fallbacks`: an array of port numbers to fallback to if the port is already in use.
 
 ## Usage
 
 When you install this extension, it will automatically try to start a HTTP server. The port can be specified with VSCode setting `restRemoteControl.port`. When you are going to use multiple VSCode sessions at the same time, it is best to configure it at workspace level or use the `restRemoteControl.fallbacks` setting to specify fallback ports when the specified one is already in use. VSCode terminals opened will have environment variable `REMOTE_CONTROL_PORT` set with the port the server is currently listening on.
+
+The port can also be pinned with the `HACKER_REST_CONTROL_PORT` environment variable. It takes precedence over the `restRemoteControl.port` setting, which makes it the reliable choice for containers and automated environments (for example, set it in `docker-compose.yml` so the endpoint is always the same).
 
 ![status bar listening message](assets/statusbar-item.png)
 

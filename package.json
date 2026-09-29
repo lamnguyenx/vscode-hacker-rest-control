@@ -4,7 +4,7 @@
   "description": "This extension allows you to remotely control Visual Studio Code via a REST endpoint, taking automation to the next level.",
   "publisher": "lamnguyenx",
   "license": "MIT",
-  "version": "2026.9.26",
+  "version": "2026.9.29",
   "engines": {
     "vscode": "^1.100.0"
   },
@@ -49,7 +49,7 @@
         "restRemoteControl.port": {
           "type": "number",
           "default": 0,
-          "description": "Specifies the port on which the REST API server will start. If not specified, it will pick one based on a hash of the current workspace path if possible."
+          "description": "Specifies the port on which the REST API server will start. The `HACKER_REST_CONTROL_PORT` environment variable overrides this setting. If neither is specified, it will pick one based on a hash of the current workspace path if possible."
         },
         "restRemoteControl.fallbacks": {
           "type": "array",
