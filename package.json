@@ -75,9 +75,12 @@
     "pretest": "npm run test-compile && npm run lint",
     "lint": "eslint src && npx prettier --check './**/*.{js,ts}'",
     "test": "xvfb-run -a node ./out/test/runTest.js",
+    "test:e2e": "playwright test --config playwright.config.ts",
+    "typecheck:tests": "tsc -p tsconfig.tests.json",
     "format": "npx prettier --write './**/*.{js,jsx,mjs,cjs,ts,tsx}'"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "^24.0.0",

@@ -117,13 +117,29 @@ As the extension progresses, I plan to add more _special_ commands (i.e. command
 - `custom.getExtensionInfo`: get details of an installed extension by passing the extension ID
 - `custom.registerExternalFormatter`: registers an external formatter via a HTTP endpoint. The HTTP endpoint will receive a JSON body with the following properties`{"file": "<document file path>", "snippet": "<content to be formatted>", "language": "<language id of the current file>"}` and it should return in the body the formatted code snippet (or the original if the code can't be formatted).
 - `custom.listOpenedFiles`: gets the list of all files currently opened (`string[]`)
-- `custom.currentEditorContent`: to get the content of the current (in-focus) editor as a string (`string` or `null`) 
+- `custom.currentFileContent`: to get the content of the current (in-focus) editor as a string (`string` or `null`) 
 - `custom.registerEventHandler`: so that an external HTTP server can handle events from VSCode API. Events supported right now are:
   - `vscode.window.onDidChangeActiveTextEditor`
   - `vscode.window.onDidChangeTextEditorSelection`
   - `vscode.workspace.onDidSaveTextDocument`
   - `vscode.workspace.onDidOpenTextDocument`
   - `vscode.workspace.onDidCloseTextDocument`
+
+## Testing
+
+The extension has a committed Playwright E2E suite (`tests/playwright/`) that
+runs against a live code-server: REST Control arranges/acts, CDP asserts the
+workbench DOM and the extension's HTTP contract.
+
+```bash
+make typecheck-tests   # strict typecheck of the E2E suite
+make test-e2e          # Playwright against the running code-server (CDP 9024)
+npm test               # legacy @vscode/test-electron host tests
+```
+
+See [`docs/important/how-to-test.md`](docs/important/how-to-test.md) for
+prerequisites, the oracle design, and the known manual limits; the general rules
+live in the meta repo's `docs/important/how-to-test-all.md`.
 
 ## To implement in the near future:
 - Add the ability to set a breakpoint at the specified file/line combination
