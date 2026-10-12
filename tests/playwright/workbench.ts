@@ -43,9 +43,27 @@ export async function connectWorkbench(): Promise<Workbench> {
   const context = browser.contexts()[0];
   if (!context) throw new Error(`no browser context on ${CDP_ENDPOINT}`);
 
-  const page =
-    context.pages().find((p) => p.url().includes(CODE_SERVER_HOST)) ?? (await context.newPage());
-  if (!page.url().includes(CODE_SERVER_HOST)) {
+  // Prefer a tab already showing this code-server. The tab's URL host may
+  // differ from CODE_SERVER_ORIGIN — the default is `localhost:9620`, but the
+  // CDP browser is often pointed at a remote/tailnet hostname. Fall back to any
+  // existing workbench tab (probe `.monaco-workbench`) before opening a new one
+  // (which would leave a stray tab behind).
+  const pages = context.pages();
+  let page = pages.find((p) => p.url().includes(CODE_SERVER_HOST));
+  if (!page) {
+    for (const candidate of pages) {
+      try {
+        if ((await candidate.locator(".monaco-workbench").count()) > 0) {
+          page = candidate;
+          break;
+        }
+      } catch {
+        // navigation/process race — keep looking
+      }
+    }
+  }
+  if (!page) {
+    page = await context.newPage();
     await page.goto(CODE_SERVER_ORIGIN, { waitUntil: "domcontentloaded" });
   }
   await page.locator(".monaco-workbench").waitFor({ timeout: 30000 });
