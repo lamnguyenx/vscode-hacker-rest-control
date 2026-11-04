@@ -7,8 +7,8 @@ Prettier-clean, `make test-e2e` → **20 passed** (~10 s) against code-server + 
 **Scope:** `tests/playwright/*` (new), `tests/playwright/workspace/*` (new),
 `playwright.config.ts` (new), `tsconfig.tests.json` (new), `tsconfig.json`,
 `package.json`, `package-lock.json`, `Makefile`, `.gitignore`, `.vscodeignore`,
-`README.md`, `docs/important/how-to-test.md` (new), and the meta repo's
-`docs/important/how-to-test-all.md` reference map.
+`README.md`, `docs/important/testing/how-to-test.md` (new), and the meta repo's
+`docs/important/testing/how-to-test-all.md` reference map.
 
 ---
 
@@ -20,7 +20,7 @@ committed Playwright E2E layer — it still shipped only the legacy
 counterpart (`hacker-browser`, `hacker-path-picker`, `hacker-stats-bar`,
 `hacker-terminal-enhanced`) had `tests/playwright/`, a `playwright.config.ts`,
 `tsconfig.tests.json`, `make test-e2e` / `make typecheck-tests`, and a
-`docs/important/how-to-test.md`.
+`docs/important/testing/how-to-test.md`.
 
 The twist: REST Control **is** the control channel every other suite drives
 through. So its own suite both *uses* the channel and *asserts* it.
@@ -31,7 +31,7 @@ through. So its own suite both *uses* the channel and *asserts* it.
 | **E2E core** | `tests/playwright/rest.ts` (+ `restResponse`), `workbench.ts`, `fixtures.ts`, `rest-control.spec.ts`, `playwright.config.ts`, `tsconfig.tests.json`, npm/Make targets |
 | **Oracle** | Branded `RC Port: <n>` status item; a local loopback HTTP fixture server as the ground truth for the two **outbound** integrations |
 | **Hygiene** | Deletes its registrations in `afterAll`, closes editors / clears notifications in `afterEach`, leaves settings untouched, artifacts under gitignored `exp/playwright` |
-| **Docs** | `docs/important/how-to-test.md`, README testing section, meta reference map |
+| **Docs** | `docs/important/testing/how-to-test.md`, README testing section, meta reference map |
 
 Total: **20/20 E2E green**, typecheck clean, Prettier clean, and the legacy Mocha
 scaffold left in place.
@@ -41,7 +41,7 @@ scaffold left in place.
 ## 1. Problem
 
 The extension had no `tests/` tree, no `playwright.config.ts`, no Make/npm E2E
-targets, and no `docs/important/how-to-test.md`. Its behavior was only covered by
+targets, and no `docs/important/testing/how-to-test.md`. Its behavior was only covered by
 `src/test/suite/extension.test.ts`, which downloads VS Code, needs `xvfb`, and
 cannot reach the code-server + CDP topology the rest of the repo uses.
 

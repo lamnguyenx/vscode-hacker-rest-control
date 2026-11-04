@@ -1,7 +1,7 @@
 # How to Test REST Control
 
 > **General rules live in the meta repo** —
-> [`how-to-test-all.md`](../../../../docs/important/how-to-test-all.md). Read it
+> [`how-to-test-all.md`](../../../../../docs/important/testing/how-to-test-all.md). Read it
 > first: it consolidates environment choice, the control-channel-vs-CDP model,
 > determinism, state hygiene, ports/paths, cache-busting, A/B isolation, and
 > flakiness. This document keeps only what is specific to *REST Control*.
@@ -167,7 +167,8 @@ are **not** in the committed suite:
   suite reverts rather than saves. The edit itself is covered.
 - **`custom.startDebugSession`** needs a real `launch.json`; not exercised here.
 - **`__type__` special-type arguments** (`Uri`/`Position`/`Location`) described
-  in the README are **not implemented** in `requestProcessor.ts`: args are
-  passed to `vscode.commands.executeCommand` as plain objects, and API commands
-  reject them ("Invalid argument 'uri'"). Use `custom.goToFileLineCharacter`,
-  which builds the types itself.
+  in [the HTTP API doc](../usage/http-api.md) are **not implemented** in
+  `requestProcessor.ts`: args are passed to
+  `vscode.commands.executeCommand` as plain objects, and API commands reject
+  them ("Invalid argument 'uri'"). Use `custom.goToFileLineCharacter`, which
+  builds the types itself.

@@ -26,6 +26,6 @@ typecheck-tests:
 
 ## Playwright E2E (REST Control arranges/acts; CDP browser asserts).
 ## Requires code-server + the CDP browser + REST Control to be running.
-## See docs/important/how-to-test.md.
+## See docs/important/testing/how-to-test.md.
 test-e2e:
 	CDP_PORT=$(CDP_PORT) npx playwright test --config playwright.config.ts

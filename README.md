@@ -1,3 +1,5 @@
+# Hacker REST Control
+
 <p align="center">
   <a href="https://marketplace.visualstudio.com/items?itemName=lamnguyenx.vscode-hacker-rest-control">
     <img alt="REST Control" src="./assets/logo.drawio.png" height="200">
@@ -25,133 +27,30 @@ The demo below shows how we can open a terminal, run some commands in it, then c
 **DISCLAIMER: This extension was forked from [Remote Control](https://github.com/estruyf/vscode-remote-control).**
 The main motivation behind it was that while `Remote Control` uses `websockets`, for my use case I can only rely on HTTP REST calls. In addition, some commands I need to use require non-primitive JavaScript types which are not handled except for a couple of cases in the original extension (e.g. the `Uri` for `vscode.open` command).
 
-## Extension Settings
+## Quick start
 
-The extension has the following settings which you can use to configure it:
-
-- `restRemoteControl.enable`: enable/disable this extension
-- `restRemoteControl.port`: set the port number on which the HTTP server will listen, otherwise the extension will pick one available port for you based on the current workspace path. The `HACKER_REST_CONTROL_PORT` environment variable overrides this setting.
-- `restRemoteControl.fallbacks`: an array of port numbers to fallback to if the port is already in use.
-
-## Usage
-
-When you install this extension, it will automatically try to start a HTTP server. The port can be specified with VSCode setting `restRemoteControl.port`. When you are going to use multiple VSCode sessions at the same time, it is best to configure it at workspace level or use the `restRemoteControl.fallbacks` setting to specify fallback ports when the specified one is already in use. VSCode terminals opened will have environment variable `REMOTE_CONTROL_PORT` set with the port the server is currently listening on.
-
-The port can also be pinned with the `HACKER_REST_CONTROL_PORT` environment variable. It takes precedence over the `restRemoteControl.port` setting, which makes it the reliable choice for containers and automated environments (for example, set it in `docker-compose.yml` so the endpoint is always the same).
-
-![status bar listening message](assets/statusbar-item.png)
-
-
-Once installed, you can execute vscode `commands` by making HTTP requests. The HTTP verb is currently ignored. Here are few examples using `curl`, assuming VSCode is listening on port `37100`:
+Install the extension, then send a command to the port it reports (the example
+assumes `37100`):
 
 ```bash
-# Create a new terminal
-curl http://localhost:37100 -d '{"command":"workbench.action.terminal.new"}' 
-# or curl http://localhost:37100/?command=workbench.action.terminal.new
-
-# Run `pwd` in the currently active terminal
-curl http://localhost:37100 -d '{"command":"custom.runInTerminal", "args": ["pwd"]}'
-# or curl http://localhost:37100/?command=custom.runInTerminal&args=%5B%22pwd%22%5D
-
-# Kill all terminals
-curl http://localhost:37100 -d '{"command":"workbench.action.terminal.killAll"}'
-# or curl http://localhost:37100/?command=workbench.action.terminal.killAll
-
-# Register an external formatter endpoint available at http://localhost:12345 that accepts POST requests and formats C++ and Python code
-curl http://localhost:37100 -d '{"command":"custom.registerExternalFormatter", "args":["http://localhost:12345", ["cpp", "python"], "POST"]}'
+curl http://localhost:37100 -d '{"command":"workbench.action.terminal.new"}'
 ```
 
-All requests are expected to be in a JSON HTTP request body in the form:
-```json
-{
-  "command": "<command-id>",
-  "args": ["<arg1>", "<arg2>", "...", "<argN>"]
-}
-```
-or URL encoded as `?command=<command-id>&args=<url-encoded-of-json-string-of-args>`.
+Pin the port in containers and automated environments with
+`HACKER_REST_CONTROL_PORT`; it overrides the `restRemoteControl.port` setting.
 
-Some VSCode commands expect VSCode's defined types such as [Range](https://code.visualstudio.com/api/references/vscode-api#Range), [Uri](https://code.visualstudio.com/api/references/vscode-api#Uri), [Position](https://code.visualstudio.com/api/references/vscode-api#Position) and [Location](https://code.visualstudio.com/api/references/vscode-api#Location). To accommodate for those, such arguments can be passed as a special types, see the example below which effectively invokes `editor.action.goToLocations` with `Uri`, `Position` and an array of `Location`s:
+## Docs
 
-```json
-{
-  "command": "editor.action.goToLocations",
-  "args": [
-    {
-      "__type__": "Uri",
-      "args": ["/path/to/file.py"]
-    },
-    {
-      "__type__": "Position",
-      "args": [4, 0]
-    },
-    [
-      {
-        "__type__": "Location",
-        "args": [
-          {
-            "__type__": "Uri",
-            "args": ["/path/to/file.py"]
-          },
-          {
-            "__type__": "Position",
-            "args": [11, 5]
-          }
-        ]
-      }
-    ]
-  ]
-}
-```
+### [Usage](docs/important/usage/)
 
-### Custom defined commands:
+- [Settings](docs/important/usage/settings.md): enable/disable, the port, and fallback ports.
+- [HTTP API](docs/important/usage/http-api.md): how the server starts, the request body and query forms, and the special `__type__` arguments.
+- [Custom commands](docs/important/usage/custom-commands.md): the `custom.*` commands that need the VS Code API, plus the planned breakpoint command.
+- [How do I get the command ID?](docs/important/usage/command-ids.md): find a built-in or extension command ID from the Command Palette.
 
-As the extension progresses, I plan to add more _special_ commands (i.e. commands that require some use of the [VSCode API](https://code.visualstudio.com/api/references/vscode-api)). For now, we have defined the following commands:
+### [Testing](docs/important/testing/)
 
-- `custom.goToFileLineCharacter`: allows you to navigate to a specific position in a file by passing the file path, line and column number as arguments
-- `custom.startDebugSession`: allows you to invoke `vscode.debug.startDebugging()` API by passing the workspace folder and a name or definition of a debug configuration as it would be set in `launch.json`
-- `custom.runInTerminal`: allows you to invoke commands the currently active integrated terminal
-- `custom.showQuickPick`: show quick pick dialog to collect selection from the user
-- `custom.showInputBox`: show input box dialog to collect a input string from the user
-- `custom.showInformationMessage`, `custom.showWarningMessage` and `custom.showErrorMessage`: show message dialogs to the user and let them click on a button
-- `custom.listInstalledExtensions`: get the list of installed extension IDs
-- `custom.getExtensionInfo`: get details of an installed extension by passing the extension ID
-- `custom.registerExternalFormatter`: registers an external formatter via a HTTP endpoint. The HTTP endpoint will receive a JSON body with the following properties`{"file": "<document file path>", "snippet": "<content to be formatted>", "language": "<language id of the current file>"}` and it should return in the body the formatted code snippet (or the original if the code can't be formatted).
-- `custom.listOpenedFiles`: gets the list of all files currently opened (`string[]`)
-- `custom.currentFileContent`: to get the content of the current (in-focus) editor as a string (`string` or `null`) 
-- `custom.registerEventHandler`: so that an external HTTP server can handle events from VSCode API. Events supported right now are:
-  - `vscode.window.onDidChangeActiveTextEditor`
-  - `vscode.window.onDidChangeTextEditorSelection`
-  - `vscode.workspace.onDidSaveTextDocument`
-  - `vscode.workspace.onDidOpenTextDocument`
-  - `vscode.workspace.onDidCloseTextDocument`
-
-## Testing
-
-The extension has a committed Playwright E2E suite (`tests/playwright/`) that
-runs against a live code-server: REST Control arranges/acts, CDP asserts the
-workbench DOM and the extension's HTTP contract.
-
-```bash
-make typecheck-tests   # strict typecheck of the E2E suite
-make test-e2e          # Playwright against the running code-server (CDP 9024)
-npm test               # legacy @vscode/test-electron host tests
-```
-
-See [`docs/important/how-to-test.md`](docs/important/how-to-test.md) for
-prerequisites, the oracle design, and the known manual limits; the general rules
-live in the meta repo's `docs/important/how-to-test-all.md`.
-
-## To implement in the near future:
-- Add the ability to set a breakpoint at the specified file/line combination
-
-
-### How do I get the command ID?
-
-To get the command ID, open the `Command Palette` and type `Show all commands`. This will give you a list with all the available commands. VScode's built-in commands can be found [here](https://code.visualstudio.com/api/references/commands).
-
-Behind each command, there is a gear button. When you click on it, it brings you to the shortcut configuration. Where you can right-click on the command and copy its ID.
-
-![how to get the command id](assets/command-id.png)
+- [How to test REST Control](docs/important/testing/how-to-test.md): the committed Playwright suite, the HTTP contract oracles, and the known manual limits.
 
 ## Feedback / issues / ideas
 

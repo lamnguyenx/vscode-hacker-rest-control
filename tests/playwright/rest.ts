@@ -8,7 +8,7 @@
  * query-string vs JSON body) as well as the workbench DOM and the outbound
  * integrations (event handler / external formatter) over CDP.
  *
- * See `docs/important/how-to-test-all.md` §3 in the meta repo:
+ * See `docs/important/testing/how-to-test-all.md` §3 in the meta repo:
  * "REST → arrange + act, CDP → assert only".
  *
  * The port is pinned by `HACKER_REST_CONTROL_PORT` in the meta repo's

@@ -34,7 +34,7 @@ import {
  *   - the visible status-bar item and the `<port>.pid` bookkeeping.
  *
  * Prereqs: code-server up with this extension installed on the pinned port
- * (`make build` + install + reload tab; see `docs/important/how-to-test.md`),
+ * (`make build` + install + reload tab; see `docs/important/testing/how-to-test.md`),
  * the CDP browser reachable on 9024, and `HACKER_REST_CONTROL_PORT` (40620)
  * exported into the code-server container.
  */
